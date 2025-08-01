@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction Result - Student Performance Predictor</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <!-- Header -->
+                <div class="text-center mb-4">
+                    <h1 class="display-5 text-primary">
+                        <i class="fas fa-chart-line me-3"></i>
+                        Prediction Result
+                    </h1>
+                </div>
+
+                {% if error %}
+                <!-- Error Message -->
+                <div class="card border-danger">
+                    <div class="card-header bg-danger text-white">
+                        <h4 class="mb-0">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            Error
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <p class="text-danger mb-0">{{ error }}</p>
+                    </div>
+                </div>
+                {% else %}
+                <!-- Student Information -->
+                <div class="card mb-4">
+                    <div class="card-header bg-secondary text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-user me-2"></i>
+                            Student Profile
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <strong>Country:</strong><br>
+                                <span class="text-primary">{{ country }}</span>
+                            </div>
+                            <div class="col-md-3">
+                                <strong>Level:</strong><br>
+                                <span class="text-info">{{ level }}</span>
+                            </div>
+                            <div class="col-md-3">
+                                <strong>Topic:</strong><br>
+                                <span class="text-success">{{ topic }}</span>
+                            </div>
+                            <div class="col-md-3">
+                                <strong>Subtopic:</strong><br>
+                                <span class="text-warning">{{ subtopic }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Prediction Result -->
+                <div class="card border-{% if prediction == 'Correct' %}success{% else %}danger{% endif %}">
+                    <div class="card-header bg-{% if prediction == 'Correct' %}success{% else %}danger{% endif %} text-white">
+                        <h4 class="mb-0 text-center">
+                            <i class="fas fa-{% if prediction == 'Correct' %}check-circle{% else %}times-circle{% endif %} me-2"></i>
+                            Prediction: {{ prediction }}
+                        </h4>
+                    </div>
+                    <div class="card-body text-center">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h2 class="text-{% if prediction == 'Correct' %}success{% else %}danger{% endif %}">
+                                    {{ prediction }}
+                                </h2>
+                                <p class="text-muted">Expected Answer</p>
+                            </div>
+                            <div class="col-md-6">
+                                <h2 class="text-primary">{{ confidence }}%</h2>
+                                <p class="text-muted">Model Confidence</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Confidence Bar -->
+                        <div class="mt-3">
+                            <label class="form-label">Confidence Level</label>
+                            <div class="progress" style="height: 20px;">
+                                <div class="progress-bar bg-{% if confidence > 70 %}success{% elif confidence > 50 %}warning{% else %}danger{% endif %}" 
+                                     role="progressbar" 
+                                     style="width: {{ confidence|default(0) }}%">
+                                    {{ confidence }}%
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interpretation -->
+                <div class="card mt-4 border-info">
+                    <div class="card-body">
+                        <h6 class="text-info">
+                            <i class="fas fa-lightbulb me-1"></i>
+                            Interpretation
+                        </h6>
+                        <p class="text-muted small mb-0">
+                            {% if prediction == 'Correct' %}
+                            The model predicts this student is likely to answer the question correctly based on their country, the question difficulty, and topic area.
+                            {% else %}
+                            The model predicts this student may have difficulty with this question based on their country, the question difficulty, and topic area.
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Action Buttons -->
+                <div class="text-center mt-4">
+                    <a href="/" class="btn btn-primary btn-lg">
+                        <i class="fas fa-redo me-2"></i>
+                        Make Another Prediction
+                    </a>
+                </div>
+
+                <!-- Footer Info -->
+                <div class="text-center mt-4">
+                    <p class="text-muted small">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Powered by Random Forest Machine Learning Model
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
