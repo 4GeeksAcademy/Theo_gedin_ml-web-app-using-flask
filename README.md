@@ -62,33 +62,6 @@ Deploy the simple Flask application to Render for online access.
 
 ## Getting Started
 
-### Prerequisites
-- Python 3.8+
-- pip package manager
-
-### Installation
-1. Clone this repository
-```bash
-git clone <repository-url>
-cd Theo_gedin_ml-web-app-using-flask
-```
-
-2. Create a virtual environment
-```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-```
-
-3. Install dependencies
-```bash
-pip install -r requirements.txt
-```
-
-4. Run the application
-```bash
-python app.py
-```
-
 ## Usage
 1. Open the web application
 2. Fill in the student information:
