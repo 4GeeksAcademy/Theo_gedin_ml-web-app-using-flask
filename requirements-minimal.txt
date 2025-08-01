@@ -1,0 +1,6 @@
+# Alternative minimal requirements.txt if the above fails
+Flask
+scikit-learn
+pandas
+numpy
+gunicorn
