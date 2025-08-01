@@ -6,36 +6,66 @@ import os
 
 app = Flask(__name__)
 
-# Load the trained model and encoders
-try:
-    with open('models/mathe_model.pkl', 'rb') as f:
-        model = pickle.load(f)
+# Global variables for model and encoders
+model = None
+encoders = None
+COUNTRIES = []
+TOPICS = []
+SUBTOPICS = []
+LEVELS = []
+
+def load_model_and_data():
+    """Load model, encoders, and dataset categories once at startup"""
+    global model, encoders, COUNTRIES, TOPICS, SUBTOPICS, LEVELS
     
-    with open('models/encoders.pkl', 'rb') as f:
-        encoders = pickle.load(f)
-    
-    print("✅ Model and encoders loaded successfully!")
-except Exception as e:
-    print(f"❌ Error loading model: {e}")
-    model = None
-    encoders = None
+    try:
+        # Load the trained model and encoders
+        print("Loading model and encoders...")
+        with open('models/mathe_model.pkl', 'rb') as f:
+            model = pickle.load(f)
+        
+        with open('models/encoders.pkl', 'rb') as f:
+            encoders = pickle.load(f)
+        
+        print("✅ Model and encoders loaded successfully!")
+        
+        # Load dataset to get exact categories used in training
+        print("Loading dataset categories...")
+        df_categories = pd.read_csv('MathE dataset.csv', delimiter=';', encoding='latin-1')
+        
+        # Get exact categories from the dataset (same as used in training)
+        COUNTRIES = sorted(df_categories['Student Country'].unique().tolist())
+        TOPICS = sorted(df_categories['Topic'].unique().tolist())
+        SUBTOPICS = sorted(df_categories['Subtopic'].unique().tolist())
+        LEVELS = sorted(df_categories['Question Level'].unique().tolist())
+        
+        print(f"✅ Categories loaded: {len(COUNTRIES)} countries, {len(TOPICS)} topics")
+        return True
+        
+    except Exception as e:
+        print(f"❌ Error loading model or data: {e}")
+        return False
 
-# Load dataset to get exact categories used in training
-df_categories = pd.read_csv('MathE dataset.csv', delimiter=';', encoding='latin-1')
+# Load everything at startup
+print("🚀 Starting Flask app...")
+if not load_model_and_data():
+    print("⚠️  Warning: Model or data not loaded properly")
 
-# Get exact categories from the dataset (same as used in training)
-COUNTRIES = sorted(df_categories['Student Country'].unique().tolist())
-TOPICS = sorted(df_categories['Topic'].unique().tolist())
-SUBTOPICS = sorted(df_categories['Subtopic'].unique().tolist())
-LEVELS = sorted(df_categories['Question Level'].unique().tolist())
-
-print(f"Available countries: {COUNTRIES}")
-print(f"Available topics: {TOPICS}")
-print(f"Available levels: {LEVELS}")
+@app.route('/health')
+def health_check():
+    """Health check endpoint for Render"""
+    if model is not None and encoders is not None:
+        return {"status": "healthy", "model_loaded": True}, 200
+    else:
+        return {"status": "unhealthy", "model_loaded": False}, 503
 
 @app.route('/')
 def index():
     """Home page with prediction form"""
+    if model is None or encoders is None:
+        return render_template('result.html', 
+                             error="Application is starting up. Please wait a moment and refresh.")
+    
     return render_template('index.html', 
                          countries=COUNTRIES,
                          topics=TOPICS, 
@@ -111,4 +141,5 @@ def predict():
 if __name__ == '__main__':
     import os
     port = int(os.environ.get('PORT', 5000))
-    app.run(debug=False, host='0.0.0.0', port=port)
+    print(f"🚀 Starting Flask app on port {port}")
+    app.run(debug=False, host='0.0.0.0', port=port, threaded=True)
