@@ -60,8 +60,6 @@ Deploy the simple Flask application to Render for online access.
 └── README.md                   # This file
 ```
 
-## Getting Started
-
 ## Usage
 1. Open the web application
 2. Fill in the student information:
