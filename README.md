@@ -96,7 +96,7 @@ This Flask web application predicts whether a student will answer a mathematics 
 - **Training Data:** 9,548 student responses from European mathematics courses
 
 ## Deployment
-[Add link to deployed application on Render once deployed]
+https://math-performance-predictor.onrender.com
 
 ## External Resources Used
 - **Bootstrap 5**: For responsive UI styling
